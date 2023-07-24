@@ -33,7 +33,8 @@ mongoose.connect(`mongodb+srv://${process.env.ID}:${process.env.Password}@cluste
 const userSchema = new mongoose.Schema({
     email: String,
     password: String ,
-    googleId:String
+    googleId:String,
+    secret:String
 });
 
 // userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ['password']});
@@ -101,16 +102,33 @@ app.get('/register', (req, res) => {
 
 
 app.get('/secrets', (req, res) => {
+    User.find({"secret":{$ne:null}},)
+});
+
+app.get('/submit', (req, res) => {
     if (req.isAuthenticated()) {
-        res.render('secrets');
+        res.render('submit');
     } else {
         res.redirect('/login');
     }
 });
 
-app.get('/submit', (req, res) => {
-    res.render('submit')
-});
+// app.post('/submit', (req, res) => {
+//     const submittedSecret = req.body.secret;
+//     console.log(req.user.id);
+//     User.findById(req.user.id).then((foundUser) => {
+//         if(foundUser){
+//             foundUser.secret = submittedSecret;
+//             foundUser.save().then(() => {
+//                 res.redirect('/secrets');
+//             }).catch((err) => {
+//                 console.log(err);
+//             });
+//         }
+//     }).catch((err) => {
+//         console.log(err);
+//     });
+// });
 
 app.get('/logout', (req, res) => {
     req.logout((err) => {
